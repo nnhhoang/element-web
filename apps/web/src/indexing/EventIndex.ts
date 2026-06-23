@@ -1355,36 +1355,54 @@ export default class EventIndex extends EventEmitter {
         }
     }
 
-    public crawlingRooms(): {
-        /** The rooms that we are currently crawling. */
-        crawlingRooms: Set<string>;
+    /**
+     * Cheap, synchronous breakdown of the encrypted rooms we're a member of:
+     *  - `indexing`: joined encrypted rooms that have a crawler checkpoint, i.e.
+     *    are still being back-filled;
+     *  - `indexed`: joined encrypted rooms with no checkpoint, i.e. fully crawled
+     *    (the crawler removes a room's checkpoint once it reaches the start of its
+     *    history);
+     *  - `errored`: joined rooms the crawler has actually errored on and given up
+     *    (a permanent failure such as a 403 from /messages - see {@link erroredRooms}).
+     *
+     * Rooms we deliberately don't index are ignored entirely (not counted): ones
+     * we've only been invited to / have left, and ones whose encryption the crypto
+     * module can't speak ({@link unindexableRooms}).
+     *
+     * This relies on the reconciliation pass having seeded checkpoints for every
+     * missed joined+encrypted room, so "no checkpoint" reliably means "done"
+     * rather than "never started". It is in-memory only (no Seshat IPC), so it's
+     * cheap enough to call on every refresh.
+     */
+    public getIndexingStatus(): { indexing: number; indexed: number; errored: number } {
+        const client = MatrixClientPeg.safeGet();
 
-        /** All the encrypted rooms known by the MatrixClient. */
-        totalRooms: Set<string>;
-    } {
-        const totalRooms = new Set<string>();
-        const crawlingRooms = new Set<string>();
+        const checkpointed = new Set<string>(this.crawlerCheckpoints.map((c) => c.roomId));
+        if (this.currentCheckpoint) checkpointed.add(this.currentCheckpoint.roomId);
 
-        this.crawlerCheckpoints.forEach((checkpoint, index) => {
-            crawlingRooms.add(checkpoint.roomId);
-        });
+        let indexing = 0;
+        let indexed = 0;
+        let errored = 0;
 
-        if (this.currentCheckpoint !== null) {
-            crawlingRooms.add(this.currentCheckpoint.roomId);
+        for (const room of client.getRooms()) {
+            if (!client.isRoomEncrypted(room.roomId)) continue;
+            // Ignore rooms we aren't a member of (invites/left) entirely.
+            if (room.getMyMembership() !== KnownMembership.Join) continue;
+            // Ignore rooms whose encryption we can't speak - we deliberately don't
+            // index them, so they aren't a problem to surface.
+            if (this.unindexableRooms.has(room.roomId)) continue;
+
+            if (checkpointed.has(room.roomId)) {
+                // Being crawled (this also covers errored rooms that have been
+                // re-seeded and are retrying).
+                indexing += 1;
+            } else if (this.erroredRooms.has(room.roomId)) {
+                errored += 1;
+            } else {
+                indexed += 1;
+            }
         }
 
-        const client = MatrixClientPeg.safeGet();
-        const rooms = client.getRooms();
-
-        const isRoomEncrypted = (room: Room): boolean => {
-            return client.isRoomEncrypted(room.roomId);
-        };
-
-        const encryptedRooms = rooms.filter(isRoomEncrypted);
-        encryptedRooms.forEach((room, index) => {
-            totalRooms.add(room.roomId);
-        });
-
-        return { crawlingRooms, totalRooms };
+        return { indexing, indexed, errored };
     }
 }
