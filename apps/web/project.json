@@ -6,7 +6,11 @@
             "cache": true,
             "command": "node module_system/scripts/install.ts",
             "inputs": ["{projectRoot}/build_config.yaml"],
-            "outputs": ["{projectRoot}/src/modules.js", "{projectRoot}/package.json", "{workspaceRoot}/pnpm-lock.yaml"],
+            "outputs": [
+                "{projectRoot}/src/modules.js",
+                "{projectRoot}/package.json",
+                "{workspaceRoot}/pnpm-lock.yaml"
+            ],
             "options": { "cwd": "apps/web" }
         },
         "prebuild:rethemendex": {
@@ -26,7 +30,11 @@
         },
         "start": {
             "command": "webpack-dev-server --output-path webapp --output-filename=bundles/_dev_/[name].js --output-chunk-filename=bundles/_dev_/[name].js --mode development",
-            "dependsOn": ["prebuild:module_system", "prebuild:rethemendex", "^start"],
+            "dependsOn": [
+                "prebuild:module_system",
+                "prebuild:rethemendex",
+                "^start"
+            ],
             "continuous": true,
             "options": { "cwd": "apps/web" }
         },

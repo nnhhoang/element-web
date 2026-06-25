@@ -47,6 +47,11 @@ vis.setup({
                 .sb-wrapper {
                     visibility: hidden !important;
                 }
+
+                /* Classes to hide during tests */
+                .duration {
+                    visibility: hidden !important;
+                }
             `),
         );
         document.head.appendChild(style);

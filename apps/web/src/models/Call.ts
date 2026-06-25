@@ -893,7 +893,10 @@ export class ElementCall extends Call {
     public async start(widgetGenerationParameters: WidgetGenerationParameters): Promise<ClientWidgetApi> {
         // Some parameters may only be set once the user has chosen to interact with the call, regenerate the URL
         // at this point in case any of the parameters have changed.
-        this.widgetGenerationParameters = { ...this.widgetGenerationParameters, ...widgetGenerationParameters };
+        this.widgetGenerationParameters = {
+            ...this.widgetGenerationParameters,
+            ...widgetGenerationParameters,
+        };
         this.widget.url = ElementCall.generateWidgetUrl(
             this.client,
             this.roomId,
