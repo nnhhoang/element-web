@@ -184,7 +184,8 @@
         "space_menu": {
             "home": "Accueil de l’espace",
             "space_settings": "Paramètres de l'espace"
-        }
+        },
+        "unread_activity": "Vous avez des notifications non lues"
     },
     "terms": {
         "tac_button": "Voir les conditions générales"

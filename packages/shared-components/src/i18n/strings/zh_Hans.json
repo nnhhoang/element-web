@@ -163,12 +163,14 @@
         "sort": "排序",
         "sort_type": {
             "activity": "活动",
+            "atoz": "",
             "unread_first": "未读优先"
         },
         "space_menu": {
             "home": "空间主页",
             "space_settings": "空间设置"
-        }
+        },
+        "unread_activity": "你有未读活动"
     },
     "terms": {
         "tac_button": "阅读条款与条件"

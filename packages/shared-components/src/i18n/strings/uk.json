@@ -3,23 +3,38 @@
         "seek_bar_label": "Панель гортання аудіо"
     },
     "action": {
+        "back": "Назад",
+        "click": "Натисніть",
+        "close": "Закрити",
+        "collapse": "Згорнути",
         "delete": "Видалити",
         "dismiss": "Відхилити",
+        "download": "Завантажити",
         "edit": "Змінити",
         "explore_rooms": "Каталог кімнат",
+        "go": "Далі",
+        "hide": "Сховати",
         "invite": "Запросити",
         "new_conversation": "Нова розмова",
         "new_room": "Нова кімната",
+        "new_section": "Новий розділ",
         "new_video_room": "Нова відеокімната",
         "open_menu": "Відкрити меню",
         "pause": "Призупинити",
+        "pin": "Закріпити",
         "play": "Відтворити",
+        "react": "Відреагувати",
         "remove": "Вилучити",
+        "reply": "Відповісти",
+        "reply_in_thread": "Відповісти в гілці",
         "retry": "Повторити спробу",
         "search": "Пошук",
-        "start_chat": "Розпочати бесіду"
+        "start_chat": "Розпочати бесіду",
+        "unpin": "Відкріпити",
+        "view_source": "Переглянути джерело"
     },
     "common": {
+        "attachment": "Вкладення",
         "preferences": "Налаштування"
     },
     "left_panel": {
